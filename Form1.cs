@@ -55,7 +55,14 @@ namespace PokeAPI
 
             textBox1.Clear();
 
-            await StreamTaskPokemon(25);
+            if (int.TryParse(txtPokemonId.Text, out int id) && id > 0)
+            {
+                await StreamTaskPokemon(id);
+            }
+            else
+            {
+                MessageBox.Show("Veuillez saisir un ID de Pokémon valide.");
+            }
         }
 
         // Interroge l'API PokeAPI, récupère toutes les informations de Pikachu au format JSON
@@ -74,41 +81,49 @@ namespace PokeAPI
         // désérialise le JSON en objet Pokemon et affiche ses informations.
         private async Task StreamTaskPokemon(int id)
         {
-            var streamTask = client.GetStreamAsync(
+            try
+            {
+                var streamTask = client.GetStreamAsync(
                 "https://pokeapi.co/api/v2/pokemon/" + id);
 
-            var pokemon = await JsonSerializer.DeserializeAsync<Pokemon>(
-                await streamTask);
+                var pokemon = await JsonSerializer.DeserializeAsync<Pokemon>(
+                    await streamTask);
 
-            textBox1.Text = pokemon.ToString();
+                textBox1.Text = pokemon.ToString();
 
-            // Afficher les capacités
-            textBox1.AppendText(Environment.NewLine + Environment.NewLine);
-            textBox1.AppendText("CAPACITÉS :" + Environment.NewLine);
+                // Afficher les capacités
+                textBox1.AppendText(Environment.NewLine + Environment.NewLine);
+                textBox1.AppendText("CAPACITÉS :" + Environment.NewLine);
 
-            foreach (var ability in pokemon.abilities)
-            {
-                textBox1.AppendText("- " + ability.ability.name + Environment.NewLine);
-            }
-
-            // Afficher les types
-            textBox1.AppendText(Environment.NewLine + "TYPES :" + Environment.NewLine);
-
-            foreach (var type in pokemon.types)
-            {
-                textBox1.AppendText("- " + type.type.name + Environment.NewLine);
-            }
-
-            byte[] imageBytes = await client.GetByteArrayAsync(
-            pokemon.sprites.front_default);
-
-            using (MemoryStream ms = new MemoryStream(imageBytes))
-            {
-                using (Image img = Image.FromStream(ms))
+                foreach (var ability in pokemon.abilities)
                 {
-                    pictureBox1.Image = new Bitmap(img);
+                    textBox1.AppendText("- " + ability.ability.name + Environment.NewLine);
+                }
+
+                // Afficher les types
+                textBox1.AppendText(Environment.NewLine + "TYPES :" + Environment.NewLine);
+
+                foreach (var type in pokemon.types)
+                {
+                    textBox1.AppendText("- " + type.type.name + Environment.NewLine);
+                }
+
+                byte[] imageBytes = await client.GetByteArrayAsync(
+                pokemon.sprites.front_default);
+
+                using (MemoryStream ms = new MemoryStream(imageBytes))
+                {
+                    using (Image img = Image.FromStream(ms))
+                    {
+                        pictureBox1.Image = new Bitmap(img);
+                    }
                 }
             }
+            catch(HttpRequestException)
+            {
+                MessageBox.Show("Pokémon introuvable ou erreur de connexion à l'API.");
+            }
+            
         }
 
         // Récupère les 151 premiers Pokémon depuis l'API

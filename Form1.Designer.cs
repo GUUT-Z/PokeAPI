@@ -31,6 +31,7 @@
             button1 = new Button();
             textBox1 = new TextBox();
             pictureBox1 = new PictureBox();
+            txtPokemonId = new TextBox();
             ((System.ComponentModel.ISupportInitialize)pictureBox1).BeginInit();
             SuspendLayout();
             // 
@@ -62,11 +63,20 @@
             pictureBox1.TabIndex = 2;
             pictureBox1.TabStop = false;
             // 
+            // txtPokemonId
+            // 
+            txtPokemonId.Location = new Point(102, 12);
+            txtPokemonId.Name = "txtPokemonId";
+            txtPokemonId.Size = new Size(100, 23);
+            txtPokemonId.TabIndex = 3;
+            txtPokemonId.Text = "25";
+            // 
             // Form1
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(800, 450);
+            Controls.Add(txtPokemonId);
             Controls.Add(pictureBox1);
             Controls.Add(textBox1);
             Controls.Add(button1);
@@ -82,5 +92,6 @@
         private Button button1;
         private TextBox textBox1;
         private PictureBox pictureBox1;
+        private TextBox txtPokemonId;
     }
 }
